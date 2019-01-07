@@ -1,0 +1,75 @@
+\documentclass[conference]{IEEEtran}
+\IEEEoverridecommandlockouts
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{algorithm}
+\usepackage{algorithmic}
+
+
+\begin{document}
+\section{Algorithm}
+\begin{algorithm}[!h]
+	\caption{MDB index}
+	\begin{algorithmic}[1]
+		\STATE $\textbf{procedure}$ $ $ ALLOCATE
+		\STATE $\qquad$ \textbf{if} $ $ $Q.exist()$ $ $\textbf{then}
+		\STATE $\qquad$ \; return $Q.pop()$
+		\STATE $\qquad$ \textbf{end if}
+		\STATE $\qquad$ return $max\_mdb\_count++$
+		\STATE $\textbf{end procedure}$\newline
+		\STATE $\textbf{procedure}$ $ $ DELETE
+		\STATE $\qquad$ $Q.insert(mdb\_id)$
+		\STATE $\textbf{end procedure}$\newline
+		\STATE $\textbf{procedure}$ $ $ GET
+		\STATE $\qquad$ \textbf{if} $ $ $ Q.include(mdb\_id)$ $ $\textbf{then}
+		\STATE $\qquad$ \; invalid $mdb\_id$
+		\STATE $\qquad$ \textbf{end if}
+		\STATE $\qquad$ \textbf{if} $ $ $mdb\_id\; > \; max\_mdb\_count \; - \; 1$ $ $\textbf{then}
+		\STATE $\qquad$ \; invalid $mdb\_id$
+		\STATE $\qquad$ \textbf{end if}
+		\STATE $\qquad$ $offset = base + mdb\_id * MAX\_SIZE$
+		\STATE $\qquad$ readfrompos($offset$)
+		\STATE $\textbf{end procedure}$
+	\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}[!h]
+	\caption{SOBI Algorithm (Iteration Procedure)}
+	\begin{algorithmic}[1]
+		\WHILE {$encore$} 
+		\STATE $encore=0$
+		\FOR{$p=1:m-1,$ $I_{p}=p:m:nm$}
+		\FOR{$q=p+1:m,$ $I_{q}=q:m:nm$}
+		\STATE $g=[A_{p,I_{p}}-A_{q,I_{q}};A_{p,I_{q}}+A_{q,I_{p}};A_{q,I_{p}}-A_{p,I_{q}}] $
+		\STATE $vcp,D \gets eig(g*g')$
+		\STATE $la,K \gets sort(diag(D))$
+		\STATE $angles=sign(K(3,1))*K(3)$
+		\STATE $c=sqrt(0.5+angles(1)/2)$
+		\STATE $s=0.5*(angles(2)-j*angles(3))/c$
+		\IF {$ abs(s) > jthresh$}
+		\STATE $encore=1$
+		\STATE $pair \gets [p:q]$
+		\STATE $G \gets [c$ $-conj(c);s$ $c]$
+		\STATE $V(:,pair) \gets V(:,pair)*G$
+		\STATE $A(pair,:) \gets G^T*A(pair,:)$
+		\STATE $A(:,[I_{p} I_{q}]) \gets [c*A_{I_{p}}+s*A_{I_{q}}$ $-\bar{s}*A_{I_{p}}+c*A_{I_{q}}]$
+		\ENDIF
+		\ENDFOR
+		\ENDFOR
+		\ENDWHILE
+	\end{algorithmic}
+\end{algorithm}
+
+\section{table}
+\begin{table}[h]
+	\centering
+	\caption{MKL Function used in P-SOBI algorithm}
+	\begin{tabular}{ll}
+		\hline
+		\textbf{MKL Function}    & \textbf{Description}                      \\ \hline
+		LAPACKE\_dsyevd & Get eigenvalues and eigenvectors \\
+		cblas\_dgemm    & Matrix multiplication            \\ 
+		cblas\_drotm    & Matrix for Givens transformation \\ 
+		cblas\_dscal    & Matrix for point multiplication  \\ \hline
+	\end{tabular}
+\end{table}
+\end{document}
